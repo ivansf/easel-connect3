@@ -1,0 +1,96 @@
+<html>
+<head>
+	<title>Connect 3 Test</title>
+	<!-- Import EaselJS Framework -->
+	<script src="lib/easel.js"></script>
+
+	<!-- End EaselJS Imports -->
+
+	<script>
+	var canvas;
+	var stage;
+	var container;
+	var captureContainers;
+	var captureIndex;
+
+	var matrix = {
+		'0' : [2,3,3,2],
+		'1' : [2,3,2,2]
+	};
+
+	var ballArea = 40;
+	var offsetX = 30;
+	var offsetY = 80;
+
+
+
+console.log(matrix[1][1]);
+
+	function init() {
+		canvas = document.getElementById("testCanvas");
+		stage = new Stage(canvas);
+		
+		var w = canvas.width;
+		var h = canvas.height;
+		
+		container = new Container();
+		stage.addChild(container);
+		
+		//if (Touch.isSupported()) { Touch.enable(stage); }
+		stage.enableMouseOver(100);
+		
+		captureContainers = [];
+		captureIndex = 0;
+
+		var text = new Text("Connect 3 Game Test");
+		text.font = "bold 16px Arial";
+		text.color = "#FFF";
+		text.x = 12;
+		text.y = 24;
+		stage.addChild(text);
+
+		for (var i = 0; i <= 1; i++) {
+			for (var j = 0; j <= 3; j++) {
+
+				var heart = new Shape();
+				heart.graphics.beginFill('#F00').drawCircle(0, 0, 15);
+				heart.y = i*ballArea + offsetY;
+				heart.x = j*ballArea + offsetX;
+				//heart.scaleX = heart.scaleY = heart.scaleY * 1.2;
+				container.addChild(heart);
+				(function() {
+					heart.onMouseOver = function(e) {
+						this.scaleX = this.scaleY = this.scaleY*1.2;
+					}
+					heart.onMouseOut = function(e) {
+						this.scaleX = this.scaleY = 1;
+					}
+				})(heart);
+			}
+
+		}
+
+
+		Ticker.addListener(window);
+		
+	}
+
+	function tick() {
+		var w = canvas.width;
+		var h = canvas.height;
+		var l = container.getNumChildren();
+
+		stage.update();
+	}
+
+	</script>
+
+</head>
+<body onload="init();">
+	<div class="canvasHolder">
+		<canvas id="testCanvas" width="580" height="680" style="background-color:#234"></canvas>
+	</div>
+	
+
+</body>
+</html>
