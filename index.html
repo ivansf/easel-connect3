@@ -69,21 +69,23 @@
 		for (var i = 0; i <= size.y; i++) {
 			for (var j = 0; j <= size.x; j++) {
 
-				var heart = new Shape();
-				console.log(i + ' ' + j );
-				heart.graphics.beginFill(colors[matrix[i][j]]).drawCircle(0, 0, 15);
-				heart.y = i*ballArea + offsetY;
-				heart.x = j*ballArea + offsetX;
-				//heart.scaleX = heart.scaleY = heart.scaleY * 1.2;
-				container.addChild(heart);
+				var gem = new Shape();
+				//console.log(i + ' / ' + j );
+				gem.graphics.setStrokeStyle(2, "round", "round");
+				gem.graphics.beginStroke("#FF0");
+				gem.graphics.beginFill(colors[matrix[i][j]]).drawCircle(0, 0, 15);
+				gem.y = i*ballArea + offsetY;
+				gem.x = j*ballArea + offsetX;
+								
+				container.addChild(gem);
 				(function() {
-					heart.onMouseOver = function(e) {
+					gem.onMouseOver = function(e) {
 						this.scaleX = this.scaleY = this.scaleY*1.2;
 					}
-					heart.onMouseOut = function(e) {
+					gem.onMouseOut = function(e) {
 						this.scaleX = this.scaleY = 1;
 					}
-				})(heart);
+				})(gem);
 			}
 
 		}
