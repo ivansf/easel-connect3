@@ -83,7 +83,7 @@ function init() {
 	stage.addChild(text);
 
 	var gem = new Gem();
-	console.log(gem.color);
+	//console.log(gem.color);
 
 
 	function populate() {
@@ -99,6 +99,8 @@ function init() {
 					gem.graphics.beginFill(colors[color]).drawCircle(0, 0, 15);
 					gem.y = i*ballArea + offsetY;
 					gem.x = j*ballArea + offsetX;
+					gem.color = color;
+					gem.selected = false;
 					gem.xIndex = i;
 					gem.yIndex = j;
 									
@@ -111,9 +113,7 @@ function init() {
 							this.scaleX = this.scaleY = 1;
 						}
 						gem.onPress = function() {
-							container.removeChild(this);
-							matrix[this.xIndex][this.yIndex] = null;
-							populate();
+							findAlike(this);
 						}
 					})(gem);
 					matrix[i][j] = gem;
@@ -121,16 +121,42 @@ function init() {
 				}
 			}
 		}
-		console.log('Generated: ' + populateCounter);
+		//console.log('Generated: ' + populateCounter);
 	}
 
+	function findAlike(gem) {
+		gem.graphics.setStrokeStyle(3, "round", "round");
+		gem.graphics.beginStroke("#FF0000");
+		gem.graphics.beginFill(gem.color).drawCircle(0, 0, 15);
 
+		// TODO: Loop this.
+		// check the one on the left:
+		
+		function checkGem(tempGem, gem) {
+			if ((tempGem != null) && (tempGem.color == gem.color) && tempGem.selected == false) {
+				console.log(tempGem.color + ' / ' + gem.color);
+				tempGem.selected = true;
+				findAlike(tempGem); // recursing
+			}
+
+		}
+		if (matrix[gem.xIndex][gem.yIndex - 1] != null) checkGem(matrix[gem.xIndex][gem.yIndex - 1], gem); // left
+		if (matrix[gem.xIndex - 1][gem.yIndex] != null) checkGem(matrix[gem.xIndex - 1][gem.yIndex], gem); // top
+		if (matrix[gem.xIndex][gem.yIndex + 1] != null) checkGem(matrix[gem.xIndex][gem.yIndex + 1], gem); // right
+		if (matrix[gem.xIndex + 1][gem.yIndex] != null) checkGem(matrix[gem.xIndex + 1][gem.yIndex], gem); //bottom
+
+
+		// killing a gem:
+		//matrix[this.xIndex][this.yIndex] = null;
+		//populate();
+		//container.removeChild(this);
+
+	}
+
+	// populate the grid with random gems
 	populate();
 
 	Ticker.addListener(window);
-
-
-
 }
 
 
