@@ -12,7 +12,6 @@
 function Gem() {
 	this.initialize();
 }
-
 Gem.prototype = new Container();
 Gem.prototype.position = [null,null];
 Gem.prototype.color = 0;
@@ -29,24 +28,25 @@ var captureIndex;
 
 // colors.
 var colors = new Array();
+colors[0] = '#948C75';
 colors[1] = '#D9CEB2';
 colors[2] = '#D5DED9';
 colors[3] = '#7A6A53';
 colors[4] = '#99B2B7';
-colors[5] = '#948C75';
+
 
 
 
 // numbers represent the color of the circles.
 var matrix = {
-	'0' : [2,3,3,2,3,2,2,3,1,3,2,3,4],
-	'1' : [2,3,2,2,3,1,5,3,1,3,2,3,4],
-	'2' : [1,3,2,2,3,2,2,3,1,5,2,3,5],
-	'3' : [2,3,2,2,4,2,2,5,2,3,2,2,4],
-	'4' : [2,3,2,2,3,2,2,3,2,3,4,3,4],
-	'5' : [2,3,1,2,5,2,2,3,1,3,2,3,5],
-	'6' : [2,3,2,2,5,2,2,2,4,3,1,3,4],
-	'7' : [2,3,2,2,5,2,2,3,3,3,2,3,5],
+	'0' : [null,null,null,null,null,null,null,null,null,null,null,null],
+	'1' : [null,null,null,null,null,null,null,null,null,null,null,null],
+	'2' : [null,null,null,null,null,null,null,null,null,null,null,null],
+	'3' : [null,null,null,null,null,null,null,null,null,null,null,null],
+	'4' : [null,null,null,null,null,null,null,null,null,null,null,null],
+	'5' : [null,null,null,null,null,null,null,null,null,null,null,null],
+	'6' : [null,null,null,null,null,null,null,null,null,null,null,null],
+	'7' : [null,null,null,null,null,null,null,null,null,null,null,null],
 };
 // Size of the grid, starting from 0. So it's total - 1
 var size = {x: 12, y: 7}; 
@@ -85,32 +85,55 @@ function init() {
 	var gem = new Gem();
 	console.log(gem.color);
 
-	for (var i = 0; i <= size.y; i++) {
-		for (var j = 0; j <= size.x; j++) {
 
-			var gem = new Shape();
-			//console.log(i + ' / ' + j );
-			gem.graphics.setStrokeStyle(1, "round", "round");
-			gem.graphics.beginStroke("#444");
-			gem.graphics.beginFill(colors[matrix[i][j]]).drawCircle(0, 0, 15);
-			gem.y = i*ballArea + offsetY;
-			gem.x = j*ballArea + offsetX;
-							
-			container.addChild(gem);
-			(function() {
-				gem.onMouseOver = function(e) {
-					this.scaleX = this.scaleY = this.scaleY*1.2;
+	function populate() {
+		var populateCounter = 0;
+		for (var i = 0; i <= size.y; i++) {
+			for (var j = 0; j <= size.x; j++) {
+				if (matrix[i][j] == null) {
+					var gem = new Shape();
+					//console.log(i + ' / ' + j );
+					var color = Math.floor(Math.random() * 5) // from 0 to 10;
+					gem.graphics.setStrokeStyle(1, "round", "round");
+					gem.graphics.beginStroke("#444");
+					gem.graphics.beginFill(colors[color]).drawCircle(0, 0, 15);
+					gem.y = i*ballArea + offsetY;
+					gem.x = j*ballArea + offsetX;
+					gem.xIndex = i;
+					gem.yIndex = j;
+									
+					container.addChild(gem);
+					(function() {
+						gem.onMouseOver = function(e) {
+							this.scaleX = this.scaleY = this.scaleY*1.2;
+						}
+						gem.onMouseOut = function(e) {
+							this.scaleX = this.scaleY = 1;
+						}
+						gem.onPress = function() {
+							container.removeChild(this);
+							matrix[this.xIndex][this.yIndex] = null;
+							populate();
+						}
+					})(gem);
+					matrix[i][j] = gem;
+					populateCounter++;
 				}
-				gem.onMouseOut = function(e) {
-					this.scaleX = this.scaleY = 1;
-				}
-			})(gem);
+			}
 		}
-
+		console.log('Generated: ' + populateCounter);
 	}
+
+
+	populate();
+
 	Ticker.addListener(window);
-	
+
+
+
 }
+
+
 
 
 
@@ -118,7 +141,6 @@ function tick() {
 	var w = canvas.width;
 	var h = canvas.height;
 	var l = container.getNumChildren();
-
 	stage.update();
 }
 
